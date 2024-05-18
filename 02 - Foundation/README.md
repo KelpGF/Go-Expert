@@ -533,3 +533,176 @@ Deposit balance: 1100
 ```
 
 Now, we solved the problem in Structs section.
+
+## Typing
+
+### Empty Interface
+
+Empty interface is an interface with no methods. It can hold values of any type.
+
+```go
+func main() {
+    var x interface{} = 10
+    var y interface{} = "Hello"
+
+    showType(x)
+    showType(y)
+}
+
+func showType(i interface{}) {
+    fmt.Printf("Type: %T, Value: %v\n", i, i)
+}
+```
+
+```text
+// Output
+Type: int, Value: 10
+Type: string, Value: Hello
+```
+
+We must be careful when using empty interfaces because we lose the type safety.
+
+### Type Assertion
+
+Type assertion is used to convert an interface to another type.
+
+```go
+func main() {
+  var x interface{} = 10
+
+  value, ok := x.(int)
+
+  if ok {
+    fmt.Printf("Value: %d\n", value)
+  } else {
+    fmt.Println("Value is not an int")
+  }
+
+  var y interface{} = 10
+  value2, ok2 := y.(string)
+  if ok2 {
+    fmt.Printf("Value2: %s\n", value2)
+  } else {
+    fmt.Println("Value2 is not an int")
+  }
+
+  value2 = y.(string) // throws a panic because y is not a string and we don't catch the ok value
+}
+```
+
+```text
+// Output
+Value: 10
+Value2 is not an int
+panic: interface conversion: interface {} is int, not string
+
+goroutine 1 [running]:
+main.main()
+        /home/kelp/dev/estudos/Go-Expert/02 - Foundation/11 - Typing/main.go:24 +0xbf
+exit status 2
+```
+
+### Generics Types
+
+Sometimes we need to create a function that works with different types. In Go, we do this:
+
+```go
+func Sum[T int | float64](m map[string]T) T {
+  var soma T
+  for _, val := range m {
+    soma += val
+  }
+
+  return soma
+}
+
+func main() {
+    mapInt := map[string]int{"a": 10, "b": 20, "c": 30}
+    mapFloat := map[string]float64{"a": 10.5, "b": 20.5, "c": 30.5}
+
+    fmt.Println("[Generics] Sum of mapInt:", Sum(mapInt))
+    fmt.Println("[Generics] Sum of mapFloat:", Sum(mapFloat))
+}
+```
+
+```text
+// Output
+[Generics] Sum of mapInt: 60
+[Generics] Sum of mapFloat: 61.5
+```
+
+### Constraints
+
+We can use constraints to limit the types that can be used in generics.
+
+```go
+type Number interface {
+  int | float64
+}
+func Sum[T Number](m map[string]T) T {
+  var soma T
+  for _, val := range m {
+    soma += val
+  }
+
+  return soma
+}
+
+func main() {
+    mapInt := map[string]int{"a": 10, "b": 20, "c": 30}
+    mapFloat := map[string]float64{"a": 10.5, "b": 20.5, "c": 30.5}
+
+    fmt.Println("[Generics] Sum of mapInt:", Sum(mapInt))
+    fmt.Println("[Generics] Sum of mapFloat:", Sum(mapFloat))
+}
+```
+
+```text
+// Output
+[Generics] Sum of mapInt: 60
+[Generics] Sum of mapFloat: 61.5
+```
+
+but constraints with same type doesn't work.
+
+```go
+type Number interface {
+  int | float64
+}
+
+type myInt int
+
+func ShowNumber[T Number](n T) {
+  fmt.Println(n)
+}
+
+func main() {
+    var a myInt = 10
+    var b int = 20
+
+    ShowNumber(a) // error: myInt and int are not the same type
+    ShowNumber(b)
+}
+```
+
+For it works, we can use `~`. Now, all types that are `int` or `float64` will be accepted.
+
+```go
+type Number interface {
+  ~int | ~float64
+}
+
+type myInt int
+
+func ShowNumber[T Number](n T) {
+  fmt.Println(n)
+}
+
+func main() {
+    var a myInt = 10
+    var b int = 20
+
+    ShowNumber(a) // now it works
+    ShowNumber(b)
+}
+```
