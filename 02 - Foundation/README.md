@@ -247,3 +247,289 @@ for key, value := range numbersMap {
     fmt.Printf("Key: %s, Value: %d\n", key, value)
 }
 ```
+
+## Functions
+
+Functions have a name, a list of parameters and a list of return values.
+
+```go
+// simple
+func add(a int, b int) int {
+    return a + b
+}
+
+// multiple parameters of the same type
+func sub(a, b int) int { // a and b are int
+    return a - b
+}
+
+// multiple return values
+func multi(a, b int) (int, error) {
+    if a == 0 || b == 0 {
+        return 0, errors.New("Can't multiply by zero")
+    }
+
+    return a * b, nil
+}
+result, err := multi(2, 3)
+```
+
+### Variadic Functions
+
+Variadic functions can receive a variable number of arguments.
+
+```go
+func sum(nums ...int) int {
+    total := 0
+
+    for _, num := range nums {
+        total += num
+    }
+
+    return total
+}
+```
+
+### Blank Identifier
+
+The blank identifier is used to discard values.
+
+```go
+_, err := multi(2, 3) // discard the first return value
+```
+
+### Closures (Anonymous Functions)
+
+Closures are functions that can access variables from outside its body.
+
+```go
+func adder() func(int) int {
+    sum := 0
+
+    return func(x int) int {
+        sum += x
+        return sum
+    }
+}
+
+func main() {
+    add := adder()
+
+    fmt.Println(add(1)) // 1
+    fmt.Println(add(2)) // 3
+}
+```
+
+and Anonymous Functions are functions without a name. They can be assigned to a variable.
+
+```go
+func main() {
+    func() {
+        fmt.Println("Hello, Go!")
+    }()
+    print := func() {
+        fmt.Println("Hello, Go!")
+    }
+    print()
+}
+```
+
+## Structs
+
+Structs are collections of fields. It have properties public and private.
+
+```go
+type Person struct {
+    Name string
+    Age int
+    active bool // private property because it starts with lowercase
+}
+
+func main() {
+    p := Person{
+        Name: "John",
+        Age: 30,
+        active: true,
+    }
+
+    fmt.Printf("Name: %s, Age: %d\n", p.Name, p.Age)
+
+    p.Name = "Doe"
+    p.Age = 31
+    p.active = false // can't access this property
+
+    fmt.Printf("Name: %s, Age: %d\n", p.Name, p.Age)
+}
+```
+
+and we can attach methods to structs informing the struct as the first parameter.
+
+```go
+
+type Person struct {
+    Name string
+    Age int
+    active bool 
+}
+func (p Person) GetActive() bool {
+ return p.active
+}
+func (p Person) Inactivate() {
+ p.active = false
+}
+
+func main() {
+    p := Person{
+        Name: "John",
+        Age: 30,
+        active: true,
+    }
+
+    fmt.Printf("Name: %s, Age: %d, Active: %t\n", p.Name, p.Age, p.GetActive())
+
+    p.Name = "Doe"
+    p.Age = 31
+    p.Inactivate() // active isn't changed. We will see how to change it in Pointers
+
+    fmt.Printf("Name: %s, Age: %d, Active: %t\n", p.Name, p.Age, p.GetActive())
+}
+```
+
+## Interfaces
+
+Interfaces are collections of method signatures.
+
+```go
+type Shape interface {
+    Area() float64
+}
+```
+
+and you needn't to implement the interface explicitly. If the struct has the methods with the same signature, it implements the interface.
+But the method signature must be the same as the interface.
+
+```go
+type Circle struct {
+    Radius float64
+}
+func (c Circle) Area() float64 {
+    return math.Pi * c.Radius * c.Radius
+}
+
+type Rectangle struct {
+    Width float64
+    Height float64
+}
+func (r Rectangle) Area() float64 {
+    return r.Width * r.Height
+}
+
+type Triangle struct {
+    Base float64
+    Height float64
+}
+func (t Triangle) Area(a int) float64 {
+    return 0.5 * t.Base * t.Height
+}
+
+func showArea(s Shape) {
+    fmt.Printf("Area: %f\n", s.Area())
+}
+
+func main() {
+    c := Circle{Radius: 2}
+    r := Rectangle{Width: 2, Height: 3}
+    t := Triangle{Base: 2, Height: 3}
+
+    showArea(c)
+    showArea(r)
+    showArea(t) // error: Triangle doesn't implement the Area method
+}
+```
+
+## Pointers
+
+Pointers are variables that its value is the memory address of another variable.
+
+```go
+func main() {
+    a := 1 // a is a variable value, &a is the memory address of a
+    var b *int // b is a pointer to an int
+    b = &a // b receives the memory address of a
+
+    fmt.Printf("a: %d, b: %p\n", a, b) // b will be shown the memory address of a
+    fmt.Printf("a: %d, b: %d\n", a, *b) // *b is the value of a
+
+    *b = 2 // change the value of a, it's the same as a = 2
+    fmt.Printf("a: %d, b: %d\n", a, *b)
+}
+```
+
+### Pointer as a Function Parameter
+
+You can use pointers as function parameters to change the value of the variable.
+
+```go
+func changeValue(param *int) {
+    *param = 2
+}
+
+func main() {
+    a := 1
+
+    changeValue(&a)
+
+    fmt.Printf("a: %d\n", a)
+}
+```
+
+```text
+// Output
+a: 2
+```
+
+We use pointer when we need to turn the variable mutable.
+
+### Pointer to Struct
+
+You can use pointers to structs to change the struct properties.
+
+```go
+    type BankAccount struct {
+        Balance int
+    }
+
+    // This method have a copy of the struct, so it will not change the original value
+    func (b BankAccount) simulateLoan(value int) int {
+        b.Balance += value
+
+        return b.Balance
+    }
+
+    // This method have a pointer to the struct, so it will change the original value
+    func (b *BankAccount) Deposit(amount int) {
+        b.Balance += amount
+    }
+
+    func main() {
+        account := BankAccount{Balance: 1000}
+        fmt.Println("Initial balance:", account.Balance)
+
+        loan := account.simulateLoan(500)
+        fmt.Println("Loan balance:", loan)
+        fmt.Println("Original balance:", account.Balance)
+
+        account.Deposit(100)
+        fmt.Println("Deposit balance:", account.Balance)
+    }
+```
+
+```text
+// Output
+Initial balance: 1000
+Loan balance: 1500
+Original balance: 1000
+Deposit balance: 1100
+```
+
+Now, we solved the problem in Structs section.
