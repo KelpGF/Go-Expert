@@ -706,3 +706,243 @@ func main() {
     ShowNumber(b)
 }
 ```
+
+## Modules
+
+We can create sub-packages to access on the main module. However, we need to create a `go.mod` file in the main module.
+
+```bash
+go mod init github.com/KelpGF/my-module-name
+```
+
+### Why use modules?
+
+Because it's a way to manage dependencies in Go. If you don't use modules, Go will use the `GOPATH` to manage dependencies and you can't access your local modules.
+
+```go
+package main
+
+import (
+    "fmt"
+    "github.com/KelpGF/my-module-name/sub_package"
+)
+
+func main() {
+    fmt.Println(sub_package.Hello())
+}
+```
+
+```go
+// sub_package/sub_package.go
+package sub_package
+
+func Hello() string {
+    return "Hello, Go!"
+}
+```
+
+### Access Modifiers
+
+When we create a package, we can use the access modifiers to define the visibility of the package.
+
+- **Public**: the name starts with an uppercase letter.
+- **Private**: the name starts with a lowercase letter.
+
+```go
+package sub_package
+
+func hello() string {
+    return "Hello, Go!"
+}
+func Hello() string {
+    return "Hello, Go!"
+}
+```
+
+```go
+package main
+
+import (
+    "fmt"
+    "github.com/KelpGF/my-module-name/sub_package"
+)
+
+func main() {
+    fmt.Println(sub_package.Hello()) // works
+    fmt.Println(sub_package.hello()) // error: can't access the private function
+}
+```
+
+It's the same way to exports functions, variables, types and structs.
+
+About structs, you can create private and public properties/methods.
+
+```go
+package sub_package
+
+type Person struct {
+    Name string
+    age int // private property
+}
+
+// private method
+func (p *Person) getName() string {
+    return p.Name
+}
+
+func (p *Person) GetAge() int {
+    return p.age
+}
+
+func (p *Person) SetAge(age int) {
+    p.age = age
+}
+```
+
+```go
+package main
+
+import (
+    "fmt"
+    "github.com/KelpGF/my-module-name/sub_package"
+)
+
+func main() {
+    p := sub_package.Person{Name: "John", age: 30}
+    p.SetAge(31) // works
+
+    fmt.Println(p.Name) // works
+    fmt.Println(p.age) // error: can't access the private property
+    fmt.Println(p.GetAge()) // works
+}
+```
+
+### Packages
+
+Using modules, we can install packages that are not in the Go standard library.
+
+```bash
+go get github.com/google/uuid
+```
+
+If we have some uninstalled dependencies in the project, we can use the `go mod tidy` command to download the those or remove the unnecessary dependencies.
+
+```bash
+go mod tidy
+```
+
+## Loop
+
+The `for` loop is the only loop in Go.
+
+```go
+for i := 0; i < 10; i++ {
+    fmt.Println(i)
+}
+```
+
+```go
+collection := []int{1, 2, 3, 4, 5}
+// or
+collection := map[string]int{"a": 1, "b": 2, "c": 3}
+
+for index, value := range collection {
+    fmt.Printf("Index: %d, Value: %d\n", index, value)
+}
+```
+
+but we can create `while` and `do while` loops.
+
+```go
+func main() {
+    i := 0
+
+    // while: for with a condition
+    for i < 10 {
+        fmt.Println(i)
+        i++
+    }
+
+    // do while: for with a break
+    for {
+        if i < 10 {
+            continue // skip the next lines and go to the next iteration
+        }
+
+        fmt.Println(i)
+        i++
+
+        if i == 20 {
+            break // exit the loop
+        }
+    }
+}
+```
+
+and we have infinite loops.
+
+```go
+func main() {
+    for {
+        fmt.Println("Hello, Go!")
+    }
+}
+```
+
+## Conditional
+
+Go has the `if` statement to create conditions.
+
+```go
+a := 10
+b := 20
+
+if a > b { // the condition must be a boolean statement
+    fmt.Println("a is greater than b")
+} else if a < b {
+    fmt.Println("a is less than b")
+} else {
+    fmt.Println("a is equal to b")
+}
+```
+
+and we can use the `switch` statement.
+
+```go
+func main() {
+    a := 10
+
+    switch a {
+    case 1:
+        fmt.Println("a is 1")
+    case 2:
+        fmt.Println("a is 2")
+    case 3:
+        fmt.Println("a is 3")
+    default:
+        fmt.Println("a is not 1, 2 or 3")
+    }
+}
+```
+
+## Build
+
+To build a Go project, we use the `go build` command.
+
+```bash
+# without a module
+go build [file]
+```
+
+```bash
+# with a module
+go build
+```
+
+We also can use pass what O.S. and architecture we want to build.
+
+```bash
+GOOS=linux GOARCH=amd64 go build [file]
+```
+
+[Here](https://www.digitalocean.com/community/tutorials/how-to-build-go-executables-for-multiple-platforms-on-ubuntu-20-04) is a tutorial to build Go executables for multiple platforms.
