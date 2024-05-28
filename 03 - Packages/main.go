@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"gofc-packages/services"
 	"io"
 	"net/http"
 	"os"
@@ -12,9 +13,16 @@ func main() {
 	// services.Run01()
 	// services.Run02()
 	// services.Run03()
-	searchByZipCode()
+	// searchByZipCode()
 
-	println("Choose a service to run.")
+	// services.Run04()
+	// services.Run05()
+	// services.Run06()
+	// services.Run07()
+	// services.Run08()
+	services.Run09()
+
+	// println("Choose a service to run.")
 }
 
 type SearchResult struct {

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <h1>Courses</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Hours</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{ range . }}
+        {{ if eq .Name "Go" }}
+        <tr style="background-color: lightgreen;">
+        {{ else }}
+        <tr>
+        {{ end }}
+          <td>{{ .Name }}</td>
+          <td>{{ .Hours }}</td>
+        </tr>
+        {{ end }}
+    </tbody>
+  </table>
+</body>
+</html>
