@@ -7,7 +7,7 @@ import (
 
 func Run06() {
 	// path starts from the calling file
-	fileServer := http.FileServer(http.Dir("./services/public"))
+	fileServer := http.FileServer(http.Dir("./public"))
 
 	mux := http.NewServeMux()
 	mux.Handle("/", fileServer)

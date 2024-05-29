@@ -1,9 +1,9 @@
 package services
 
 import (
-	"html/template"
 	"net/http"
 	"os"
+	"text/template"
 )
 
 type course struct {
@@ -19,7 +19,7 @@ func Run08() {
 }
 
 func ioOutput() {
-	t := template.Must(template.New("template.html").ParseFiles("./services/public/template.html"))
+	t := template.Must(template.New("template.html").ParseFiles("./public/template.html"))
 
 	coursesGroup := courses{
 		{"Go", 20},
@@ -35,7 +35,7 @@ func ioOutput() {
 
 func serverMux() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		t := template.Must(template.New("template.html").ParseFiles("./services/public/template.html"))
+		t := template.Must(template.New("template.html").ParseFiles("./public/template.html"))
 
 		coursesGroup := courses{
 			{"Go", 20},
