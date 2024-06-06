@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"gofc-database/goorm"
 	"gofc-database/model"
 	"gofc-database/service"
 
@@ -10,6 +11,12 @@ import (
 )
 
 func main() {
+	goorm.Main()
+
+	// database()
+}
+
+func database() {
 	db, err := sql.Open("mysql", "root:root@tcp(localhost:3306)/goexpert")
 	if err != nil {
 		panic(err)
