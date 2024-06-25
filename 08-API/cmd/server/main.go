@@ -1,8 +1,9 @@
 package main
 
 import (
-	"08-APIs/configs"
 	"fmt"
+
+	"github.com/KelpGF/Go-Expert/08-APIs/configs"
 )
 
 func main() {
