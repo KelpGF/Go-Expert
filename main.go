@@ -5,49 +5,20 @@ import (
 	"time"
 )
 
-type CalcArea interface {
-	Area() float64
+type User struct {
+	Name string
 }
 
-type CalcPerimetro interface {
-	Perimetro() float64
-}
-
-type Forma interface {
-	CalcArea
-	CalcPerimetro
-}
-
-type Quadrado struct {
-	Lado float64
-}
-
-func (q Quadrado) Area() float64 {
-	return q.Lado * q.Lado
-}
-func (q Quadrado) Perimetro() float64 {
-	return q.Lado * 4
-}
-
-func printForma(f Forma) {
-	fmt.Println(f.Area(), f.Perimetro())
-}
-
-func printArea(f CalcArea) {
-	fmt.Println(f.Area())
-}
-
-func printPerimetro(f CalcPerimetro) {
-	fmt.Println(f.Perimetro())
+func changeName(u *User) {
+	u.Name = "Kelvin"
 }
 
 func main() {
-	var forma Forma
-	forma = Quadrado{Lado: 2}
-
-	printForma(forma)
-	printArea(forma)
-	printPerimetro(forma)
+	var user User = User{
+		Name: "",
+	}
+	changeName(&user)
+	fmt.Println(user.Name)
 }
 
 func main2() {
