@@ -1,4 +1,4 @@
-package user
+package entity
 
 import (
 	"github.com/KelpGF/Go-Expert/08-APIs/pkg/entity"
