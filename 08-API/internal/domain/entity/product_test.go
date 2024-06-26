@@ -3,12 +3,11 @@ package entity
 import (
 	"testing"
 
-	"github.com/KelpGF/Go-Expert/08-APIs/pkg/entity"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestNewProduct(t *testing.T) {
-	product, err := NewProduct(entity.NewID(), "product", 10.0)
+	product, err := NewProduct("product", 10.0)
 
 	assert.Nil(t, err)
 	assert.NotNil(t, product)
@@ -19,7 +18,7 @@ func TestNewProduct(t *testing.T) {
 }
 
 func TestNewProductWhenNameIsEmpty(t *testing.T) {
-	product, err := NewProduct(entity.NewID(), "", 10.0)
+	product, err := NewProduct("", 10.0)
 
 	assert.NotNil(t, err)
 	assert.Nil(t, product)
@@ -27,7 +26,7 @@ func TestNewProductWhenNameIsEmpty(t *testing.T) {
 }
 
 func TestNewProductWhenPriceIsZero(t *testing.T) {
-	product, err := NewProduct(entity.NewID(), "product", 0)
+	product, err := NewProduct("product", 0)
 
 	assert.NotNil(t, err)
 	assert.Nil(t, product)
@@ -35,7 +34,7 @@ func TestNewProductWhenPriceIsZero(t *testing.T) {
 }
 
 func TestNewProductWhenPriceIsNegative(t *testing.T) {
-	product, err := NewProduct(entity.NewID(), "product", -10.0)
+	product, err := NewProduct("product", -10.0)
 
 	assert.NotNil(t, err)
 	assert.Nil(t, product)

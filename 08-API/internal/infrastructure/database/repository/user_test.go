@@ -3,15 +3,15 @@ package repository
 import (
 	"testing"
 
-	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 
 	"github.com/KelpGF/Go-Expert/08-APIs/internal/domain/entity"
+	"github.com/KelpGF/Go-Expert/08-APIs/test/database"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestCreateUser(t *testing.T) {
-	db := setup()
+	db := setupUser()
 
 	user := defaultUser()
 	userRepository := NewUserRepository(db)
@@ -30,11 +30,11 @@ func TestCreateUser(t *testing.T) {
 }
 
 func TestFindByEmail(t *testing.T) {
-	db := setup()
+	db := setupUser()
 
 	user := defaultUser()
 	userRepository := NewUserRepository(db)
-	userRepository.Create(user)
+	db.Create(user)
 
 	userFound, err := userRepository.FindByEmail(user.Email)
 
@@ -45,11 +45,8 @@ func TestFindByEmail(t *testing.T) {
 	assert.Equal(t, user.Password, userFound.Password)
 }
 
-func setup() *gorm.DB {
-	db, err := gorm.Open(sqlite.Open("file::memory:"), &gorm.Config{})
-	if err != nil {
-		panic(err)
-	}
+func setupUser() *gorm.DB {
+	db := database.Setup()
 
 	db.AutoMigrate(&entity.User{})
 
