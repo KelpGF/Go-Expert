@@ -3,6 +3,7 @@ module github.com/KelpGF/Go-Expert/08-APIs
 go 1.22.3
 
 require (
+	github.com/go-chi/chi/v5 v5.0.14
 	github.com/go-chi/jwtauth v1.2.0
 	github.com/google/uuid v1.4.0
 	github.com/spf13/viper v1.19.0

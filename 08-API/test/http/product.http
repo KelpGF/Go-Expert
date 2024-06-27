@@ -1,0 +1,30 @@
+POST http://localhost:3000/product HTTP/1.1
+Content-Type: application/json
+
+{
+    "name": "Product 1",
+    "price": 100
+}
+
+###
+
+GET http://localhost:3000/product HTTP/1.1
+
+###
+
+GET http://localhost:3000/product/e798b9f3-340e-42e8-acf6-a9aac55dff35 HTTP/1.1
+
+###
+
+PUT http://localhost:3000/product/e798b9f3-340e-42e8-acf6-a9aac55dff35 HTTP/1.1
+Content-Type: application/json
+
+{
+    "name": "changed",
+    "price": 897320,
+    "created_at": "2024-06-27T20:30:15.161109201Z"
+}
+
+###
+
+DELETE http://localhost:3000/product/e798b9f3-340e-42e8-acf6-a9aac55dff35 HTTP/1.1

@@ -1,2 +1,5 @@
 coverage.out
 coverage.html
+
+.env
+test.db
