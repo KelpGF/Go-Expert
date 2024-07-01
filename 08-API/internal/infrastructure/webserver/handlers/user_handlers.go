@@ -23,6 +23,17 @@ func NewUserHandler(repository repository.UserRepository) *UserHandlers {
 	}
 }
 
+// GetJwt godoc
+// @Summary 		Get a JWT token
+// @Description Get a JWT token by providing email and password
+// @Tags 				users
+// @Accept 			json
+// @Produce 		json
+// @Param 			request	body dto.GetJWTInput true "User Credentials"
+// @Success 		200 {object} dto.GetJWTOutput
+// @Failure 		400 {object} Error
+// @Failure 		401 {object} Error
+// @Router 			/user/generate_token [post]
 func (h *UserHandlers) GetJwt(w http.ResponseWriter, r *http.Request) {
 	jwt := r.Context().Value("jwtAuth").(*jwtauth.JWTAuth)
 	jwtExpiresIn := r.Context().Value("jwtExpiresIn").(int)
@@ -31,17 +42,29 @@ func (h *UserHandlers) GetJwt(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		errResponse := Error{
+			Message: "Invalid request body",
+		}
+		json.NewEncoder(w).Encode(errResponse)
 		return
 	}
 
 	user, err := h.repository.FindByEmail(input.Email)
 	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
+		errResponse := Error{
+			Message: "Invalid email or password",
+		}
+		json.NewEncoder(w).Encode(errResponse)
 		return
 	}
 
 	if !user.ComparePassword(input.Password) {
 		w.WriteHeader(http.StatusUnauthorized)
+		errResponse := Error{
+			Message: "Invalid email or password",
+		}
+		json.NewEncoder(w).Encode(errResponse)
 		return
 	}
 
@@ -52,9 +75,7 @@ func (h *UserHandlers) GetJwt(w http.ResponseWriter, r *http.Request) {
 	}
 	_, token, _ := jwt.Encode(jwtPayload)
 
-	accessToken := struct {
-		AccessToken string `json:"access_token"`
-	}{
+	accessToken := dto.GetJWTOutput{
 		AccessToken: token,
 	}
 
@@ -62,11 +83,26 @@ func (h *UserHandlers) GetJwt(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
+// Create User godoc
+// @Summary 		Create a new user
+// @Description Create a new user
+// @Tags 				users
+// @Accept 			json
+// @Produce 		json
+// @Param 			request	body dto.CreateUserInput true "User Request"
+// @Success 		201 {object} entity.User
+// @Failure 		400 {object} Error
+// @Failure 		500 {object} Error
+// @Router 			/user [post]
 func (h *UserHandlers) Create(w http.ResponseWriter, r *http.Request) {
 	var input dto.CreateUserInput
 	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		errResponse := Error{
+			Message: "Invalid request body",
+		}
+		json.NewEncoder(w).Encode(errResponse)
 		return
 	}
 
@@ -75,6 +111,10 @@ func (h *UserHandlers) Create(w http.ResponseWriter, r *http.Request) {
 	err = h.repository.Create(user)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
+		errResponse := Error{
+			Message: "Internal server error",
+		}
+		json.NewEncoder(w).Encode(errResponse)
 		return
 	}
 

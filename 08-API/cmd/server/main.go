@@ -13,8 +13,26 @@ import (
 	"github.com/go-chi/jwtauth"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+
+	_ "github.com/KelpGF/Go-Expert/08-APIs/docs"
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
+// @title           Go Expert API
+// @version         1.0
+// @description     Product API with authentication
+// @termsOfService  http://swagger.io/terms/
+
+// @contact.name   Kelvin Gomes
+// @contact.url    https://www.linkedin.com/in/kelvin-gomes-fernandes
+// @contact.email  kelvingomesdeveloper@gmail.com
+
+// @host      localhost:3000
+// @BasePath  /
+
+// @securityDefinitions.apiKey ApiKeyAuth
+// @in header
+// @name Authorization
 func main() {
 	configs := configs.LoadConfig(".")
 
@@ -34,6 +52,8 @@ func main() {
 
 	mapperProductRoutes(router, db, configs.TokenAuth)
 	mapperUserRoutes(router, db)
+
+	router.Get("/docs/*", httpSwagger.Handler(httpSwagger.URL("http://localhost:3000/docs/doc.json")))
 
 	http.ListenAndServe(configs.WebServerHost+":"+configs.WebServerPort, router)
 }
