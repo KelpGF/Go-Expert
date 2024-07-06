@@ -1,0 +1,10 @@
+services:
+  app:
+    build: .
+    entrypoint: sh -c "tail -f /dev/null"
+    container_name: go_multithreading
+    ports:
+      - "3000:3000"
+    working_dir: /app
+    volumes:
+      - .:/app
