@@ -1,0 +1,40 @@
+# Object type for Category
+type Category {
+  id: ID!
+  name: String!
+  description: String
+  courses: [Course!]!
+}
+
+# Object type for Course
+type Course {
+  id: ID!
+  title: String!
+  description: String
+  category: Category!
+}
+
+# Input type for Category. It's used on the mutation to create a new category
+input CreateCategoryInput {
+  name: String!
+  description: String
+}
+
+# Input type for Course. It's used on the mutation to create a new course
+input CreateCourseInput {
+  title: String!
+  description: String
+  categoryId: ID!
+}
+
+# Object type special because it's used as entry to fetch data
+type Query {
+  categories: [Category!]!
+  courses: [Course!]!
+}
+
+# Object type special because it's used to mutate data
+type Mutation {
+  createCategory(input: CreateCategoryInput!): Category!
+  createCourse(input: CreateCourseInput!): Course!
+}

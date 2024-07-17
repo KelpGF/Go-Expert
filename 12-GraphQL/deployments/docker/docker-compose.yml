@@ -1,0 +1,11 @@
+services:
+  app:
+    build: 
+      context: ../../
+      dockerfile: build/package/Dockerfile
+    container_name: go_graphql
+    working_dir: /app
+    volumes:
+      - ../../:/app
+    ports:
+      - 8080:8080
