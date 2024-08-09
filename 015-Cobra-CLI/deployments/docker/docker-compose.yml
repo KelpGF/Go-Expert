@@ -1,0 +1,10 @@
+services:
+  app:
+    build: 
+      context: ../../
+      dockerfile: build/package/Dockerfile
+    entrypoint: sh ./scripts/docker-entrypoint.sh
+    container_name: go_cli
+    working_dir: /app
+    volumes:
+      - ../../:/app
