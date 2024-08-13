@@ -1,0 +1,29 @@
+services:
+  app:
+    build: 
+      context: ../../
+      dockerfile: build/package/Dockerfile
+    entrypoint: sh ./scripts/docker-entrypoint.sh
+    container_name: go_uow
+    working_dir: /app
+    volumes:
+      - ../../:/app
+    networks:
+      - go_uow_net
+
+  mysql: 
+    image: mysql:5.7
+    restart: always
+    container_name: go_uow_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: courses
+      MYSQL_PASSWORD: root
+    ports:
+      - "3306:3306"
+    networks:
+      - go_uow_net
+
+networks:
+  go_uow_net:
+      name: go_uow

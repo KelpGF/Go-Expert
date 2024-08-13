@@ -1,0 +1,1 @@
+migrate -path sql/migrations -database "mysql://root:root@tcp(go_uow_mysql:3306)/courses" -verbose down
