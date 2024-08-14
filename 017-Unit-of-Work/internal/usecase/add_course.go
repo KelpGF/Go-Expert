@@ -5,6 +5,7 @@ import (
 
 	"github.com/KelpGF/Go-Expert/017-UOW/internal/entity"
 	"github.com/KelpGF/Go-Expert/017-UOW/internal/repository"
+	"github.com/google/uuid"
 )
 
 type InputUseCase struct {
@@ -37,6 +38,7 @@ func (a *AddCourseUseCase) Execute(ctx context.Context, input InputUseCase) erro
 	}
 
 	course := entity.Course{
+		ID:         uuid.New().String(),
 		Name:       input.CourseName,
 		CategoryID: input.CourseCategoryID,
 	}
