@@ -1,0 +1,8 @@
+services:
+  app:
+    image: golang:1.22
+    container_name: go_di
+    working_dir: /go/src/app
+    volumes:
+      - .:/go/src/app
+    entrypoint: sh -c "tail -f /dev/null"
