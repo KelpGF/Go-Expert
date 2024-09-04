@@ -1,0 +1,19 @@
+services:
+
+  go-app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8080:8080"
+    container_name: go-app
+    volumes:
+      - .:/app
+
+  go-app-prod:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    ports:
+      - "8081:8080"
+    container_name: go-app-prod
